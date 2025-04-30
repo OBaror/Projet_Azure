@@ -1,0 +1,36 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main  # Branche principale pour le déclenchement automatique du pipeline
+
+pool:
+  name: 'az-projet123'
+  vmImage: 'windows-latest'  # Utilisation de l'agent Windows hébergé par Azure DevOps
+
+jobs:
+- job: BuildAndDeploy
+  steps:
+    # Étape 1: Installer les dépendances du backend (API)
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'  # Utilise Node.js version 18.x
+    displayName: 'Install Node.js'
+
+  - script: |
+      cd backend/api-node
+      npm install
+      npm run start
+    displayName: 'Install and Build Backend'
+
+    # Étape 2: Déployer le backend (App Service classique pour API)
+  - task: AzureWebApp@1
+    inputs:
+      azureSubscription: 'AzureSubscription1'
+      appName: 'backend123'  # Nom de ton App Service pour le backend
+      package: '$(System.DefaultWorkingDirectory)/backend/api-node'
+    displayName: 'Deploy Backend to Azure'
+
+
