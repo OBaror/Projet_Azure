@@ -12,7 +12,7 @@ const dbConfig = {
     user: "azroot",
     password: "projetazure1.",
     server: "az-projet123.database.windows.net",
-    database: "backend123-gsfsfvgsgsf8c3a4.westeurope-01.azurewebsites.net",
+    database: "az-projet12",
     options: {
         encrypt: true,
         trustServerCertificate: false,
