@@ -30,16 +30,21 @@ async function connectDB() {
 }
 connectDB();
 
-// Route pour ajouter un étudiant
 app.post('/etudiants', async (req, res) => {
-    const { nom, age } = req.body;
-    try {
-        await sql.query`INSERT INTO etudiants (nom, age) VALUES (${nom}, ${age})`;
-        res.status(201).json({ message: "Étudiant ajouté !" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+  const { nom, age } = req.body;
+  try {
+      const pool = await sql.connect(dbConfig);
+      const result = await pool.request()
+          .input('nom', sql.NVarChar, nom)  // Paramètre pour le nom
+          .input('age', sql.Int, age)      // Paramètre pour l'âge
+          .query('INSERT INTO etudiants (nom, age) VALUES (@nom, @age)');
+      res.status(201).json({ message: "Étudiant ajouté !" });
+  } catch (err) {
+      console.error("Erreur lors de l'insertion :", err);
+      res.status(500).json({ error: err.message });
+  }
 });
+
 
 // Route pour récupérer tous les étudiants
 app.get('/etudiants', async (req, res) => {
